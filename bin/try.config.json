@@ -1,0 +1,44 @@
+[
+{ "config":":default:",
+    "options":{
+        "#comment":"###### Default options, do not change unless you know what you are doing",
+        "has-precedence":"false",
+        "db-login":"operator", "db-password":"CastAIP", "db-server": "localhost", "db-port":"2280", "db-base":"postgres",
+        "b-min-weight":6,
+        "t-min-weight":9,
+        "generate-eviews":["00","all-00","01","all-01","02","all-02","03","all-03"],
+        "data-sub-folder":"_data",
+        "paths-sub-folder":"_paths",
+        "gviz-sub-folder":"_gviz",
+        "gviz-distrib-path":"C:\\ProgramFiles\\Tools\\Drawing\\Graphviz\\graphviz-2.38\\release",
+        "gviz-outputs":[ "png", "svg", "#dot", "#xdot" ],
+        "style":{
+            "node": {
+                "border-color": { "regular":"white", "entry-point":"goldenrod1", "end-point":"goldenrod1", "with-crit":"red", "with-non-crit":"gray30" },
+                "fill-color": { "regular":"white", "entry-point":"lightyellow", "end-point": "cornsilk", "with-crit":"white", "with-non-crit":"white" },
+                "text-color": { "object-type":"blue3", "object-name":"magenta3", "crit-violation":"red3", "non-crit-violation":"gray40"}
+            }
+        },
+        "with-critical-violations":true,
+        "#dummy":null
+    }
+},
+
+{ "config":"Webgoat@localhost",
+    "options":{
+        "enable":true, "disable-all-others":true,
+        "client-name":"Community", "client-app":"Webgoat", "db-server": "localhost", "db-base":"postgres", "db-port":"2280", "db-schema-prefix":"webgoat",
+        "title":"Webgoat",
+        "output-root-folder":"D:\\ZRepoT\\Prj\\Webgoat\\_Kyt-Github-RC02",
+        "#commented-out#health-factors":["Efficiency"],
+        "with-violations":true,
+        "critical-rules-only":true,
+        "override-existing-extract-file":false,
+        "#transaction-limit":1
+    },
+    "transactions" : [
+        { "automatic":true, "limit-rob":5, "limit-eff":5, "limit-sec":5 }
+    ]
+}
+
+]

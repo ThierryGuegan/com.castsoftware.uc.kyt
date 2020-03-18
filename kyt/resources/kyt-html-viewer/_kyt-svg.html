@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>KyT</title>
+  <meta name="description" content="Know your transaction" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link href="./dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="./dist/vis-network.min.js"></script>
+  <script src="transaction-data.js"></script>
+  <script id="code">
+  </script>
+</head>
+<body>
+<div id="Container" style="width:100%">
+  <div id="Menu" style="float:left; border:1px solid black; width:30%; height:100%; overflow:scroll;overflow:auto;">
+    <table id="kytTable" class=" table order-list">
+	  <!-- <thead><tr><td>Name</td><td>Subfolder</td><td>Fullname</td><td>HF</td><td>TRI</td></tr></thead> -->
+	  <tbody>
+        <tr><td class="col-sm-4"></td>
+	      <td class="col-sm-4"></td>
+	      <td class="col-sm-3"></td>
+	      <td class="col-sm-3"></td>
+		  <td class="col-sm-2"></td></tr>
+      </tbody>
+
+    </table>
+  </div> <!-- Menu -->
+  <div id="View" style="border:1px solid red; height:100%; overflow:scroll;overflow:auto;">
+  </div><!-- View -->
+</div/><!-- Container -->
+  
+  <div id="kytTrace">toto
+  </div>
+<script>
+var gMouseX=-1
+var gMouseY=-1
+var cVisualisationForHeading={ "PNG": "/_gviz/99_objects-02.txt.gviz.png", "SVG": "/_gviz/99_objects-02.txt.gviz.svg", "HTML": "/_gviz/99_objects-02.txt.data.js" }
+var cViewRendererCallback= { "PNG":viewTransactionAsPic, "SVG":viewTransactionAsSvg,"HTML":viewTransactionAsVisNetwork }
+var cVisualisationExtension={ "PNG":"png", "SVG":"svg", "HTML":"data.js" }
+function createAnchor( aText, aLink, aOnClickFunction ) {
+	var retVal = document.createElement('a');
+	retVal.setAttribute( "href", "#"+aLink )
+	retVal.appendChild( document.createTextNode( aText ) )
+	if( aOnClickFunction ) {
+		retVal.addEventListener( "click", aOnClickFunction );
+	}
+	return retVal;
+}
+function getVisualisationForHeading( aKind ) {
+	return cVisualisationForHeading[aKind]
+}
+function viewRendererCallback( aKind ) {
+	return cViewRendererCallback[aKind]
+}
+function visualisationExtension( aKind ) {
+	return cVisualisationExtension[aKind]
+}
+function createTransactionRowHeading( aTable, aSubfolder, aName, aTri, aFullname, aKind ){
+	var vNewTr=aTable.insertRow(-1);
+	vNewTr.insertCell(0).appendChild( createAnchor( aSubfolder, "../"+aSubfolder+"/_gviz/99_objects-03.txt.gviz.svg", viewRendererCallback(aKind) ) );
+	vNewTr.cells[0].setAttribute( "colspan", 9 )
+}
+function createRelativeLinkToVisualisation( aSubfolder, aAlgo, aKind ) {
+	return "../"+aSubfolder+"/_gviz/99_objects-"+aAlgo+".txt.gviz."+visualisationExtension(aKind)
+}
+function createTransactionRowAlgo( aRow, aSubfolder, aAlgo, aKind ) {
+	var vLinkUrl=createRelativeLinkToVisualisation(aSubfolder,aAlgo,aKind);
+	aRow.insertCell(-1).appendChild(createAnchor(aAlgo, vLinkUrl, viewRendererCallback(aKind)));
+}
+function fillTransactionList(aKind) {
+	var vWidth  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+	var vHeight = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
+	document.getElementById("Container").style.height = ""+(vHeight*0.96)+"px"
+
+	var vTable=document.getElementById("kytTable");
+	for( var i=0; i<G_Transactions.length; ++i ) {
+		// Heading row for transaction
+		vSubfolder = G_Transactions[i].subfolder;
+		createTransactionRowHeading( vTable, vSubfolder, null, null, null, aKind )
+		
+		// One cell per algo, with following layout
+		vLayout = [ { start:0, end:7, isAll:false }, { start:0, end:4, isAll:true}, { start: 5, end: 11, isAll: true } ]
+		vLayout.forEach(function(aItem,aIndex){
+			var vNewTr = vTable.insertRow(-1)
+			vNewTr.insertCell(-1).appendChild(document.createTextNode("\u00A0"));
+			for( var j=aItem.start; j<=aItem.end; ++j ) {
+				var vAlgo=(aItem.isAll?"all-":"")+(j<10?"0":"")+j
+				createTransactionRowAlgo( vNewTr, vSubfolder, vAlgo, aKind );
+			}
+		})
+	}
+}
+function viewTransactionAsPic(aEvent,aOnLoad){
+	var vView=document.getElementById("View");
+	if( vView.hasChildNodes() ) {
+		vView.removeChild( vView.firstChild )
+	}
+	var vPath=aEvent.target.getAttribute("href").substring(1);
+	var vImg=document.createElement("IMG")
+
+	vImg.onload=function(){
+		if( vImg.clientWidth == vImg.clientHeight ) {
+			vImg.style.width = "100%"
+			vImg.style.height = "100%"
+		}else if( vImg.clientWidth > vImg.clientHeight ) {
+			vImg.style.width = "100%"
+			vImg.style.height = "*"
+		}else{
+			vImg.style.width = "*"
+			vImg.style.height = "100%"
+		}
+		if( aOnLoad ) {
+			aOnLoad(aEvent,aOnLoad)
+		}
+	}
+	vImg.setAttribute( "src", aEvent.target.getAttribute("href").substring(1) )
+	vView.appendChild(vImg)
+}
+function addListenersToSvgElements( aPath, aOrigEvent ) {
+}
+function viewTransactionAsSvg(aEvent){
+	return viewTransactionAsPic(aEvent,addListenersToSvgElements)
+	var vView=document.getElementById("View");
+	if( vView.hasChildNodes() ) {
+		vView.removeChild( vView.firstChild )
+	}
+	var vPath=aEvent.target.getAttribute("href").substring(1);
+	var vSvgObject=document.createElement("object")
+	vSvgObject.onload=function(){
+		if( vSvgObject.clientWidth == vSvgObject.clientHeight ) {
+			vSvgObject.style.width = "100%"
+			vSvgObject.style.height = "100%"
+		}else if( vSvgObject.clientWidth > vSvgObject.clientHeight ) {
+			vSvgObject.style.width = "100%"
+			vSvgObject.style.height = "*"
+		}else{
+			vSvgObject.style.width = "*"
+			vSvgObject.style.height = "100%"
+		}
+	}
+	vSvgObject.setAttribute( "data", aEvent.target.getAttribute("href").substring(1) )
+	vSvgObject.setAttribute( "type", "image/svg+xml" )
+	vView.appendChild(vSvgObject)
+}
+function viewTransactionAsVisNetwork(aEvent){
+}
+function handleWheel( aEvent ) {
+	if( aEvent.ctrlKey ) {
+		vView = document.getElementById("View");
+		if( vView.hasChildNodes() ) {
+			var vImg = vView.firstChild
+			var vHeight=parseInt(vImg.style.height)
+			var vWidth=parseInt(vImg.style.width)
+			console.log( "mousewheel: "+vWidth+"x"+vHeight )
+
+			if( aEvent.deltaY > 0 ) {
+				if( !Number.isNaN(vHeight) && vHeight>105 ) {
+					vHeight = ""+(vHeight*.95)+"%"
+					vImg.style.height = vHeight
+					console.log( "mousewheel: decreasing height to: "+vHeight )
+				}else if( !Number.isNaN(vWidth) && vWidth>105 ) {
+					vWidth = ""+(vWidth*.95)+"%"
+					vImg.style.width = vWidth
+					console.log( "mousewheel: decreasing width to: "+vWidth )
+				}
+			}else if( aEvent.deltaY < 0 ) {
+				if( !Number.isNaN(vHeight) && vHeight<1000 ) {
+					vHeight = ""+(vHeight*1.05)+"%"
+					vImg.style.height = vHeight
+					console.log( "mousewheel: increasing height to: "+vHeight )
+				}else if( !Number.isNaN(vWidth) && vWidth<1000 ) {
+					vWidth = ""+(vWidth*1.05)+"%"
+					vImg.style.width = vWidth
+					console.log( "mousewheel: increasing width to: "+vWidth )
+				}
+			}
+			//alert( "Wheel: "+aEvent.ctrlKey+": "+aEvent.deltaY+": "+vImg.tagName+": "+vWidth+"x"+vHeight );
+		}
+		aEvent.preventDefault();
+		return false
+	}
+}
+function handleClickOnView( aEvent ) {
+	alert( "click on view: +"+aEvent.target.scrollLeft+"+"+aEvent.target.scrollTop )
+}
+function handleMouseMove( aEvent ) {
+	var vThreshold=1
+	//console.log( "  >>>>>> mouse move: "+aEvent.pageX+","+aEvent.pageY+": "+(aEvent.pageX-gMouseX)+", "+(aEvent.pageY-gMouseY) )
+	if( Math.abs(aEvent.pageX-gMouseX)>vThreshold || Math.abs(aEvent.pageY-gMouseY)>vThreshold ) {
+		if( Math.abs(aEvent.pageX-gMouseX)>vThreshold ) {
+			document.getElementById("View").scrollLeft += gMouseX-aEvent.pageX;
+		}
+		if( Math.abs(aEvent.pageY-gMouseY)>vThreshold ) {
+			document.getElementById("View").scrollTop += gMouseY-aEvent.pageY;
+		}
+	}
+	aEvent.preventDefault();
+}
+function handleMouseDown( aEvent ) {//console.log( ">>>>>> mouse down: +"+aEvent.pageX+"+"+aEvent.pageY )
+	gMouseX = aEvent.pageX
+	gMouseY = aEvent.pageY
+	document.getElementById("View").addEventListener("mouseup",handleMouseUp,  true);
+	document.getElementById("View").addEventListener("mousemove",handleMouseMove, true);
+	aEvent.preventDefault();
+	aEvent.stopPropagation();
+}
+function handleMouseUp( aEvent ) {//console.log( "    >>>>>> mouse up" )
+	document.getElementById("View").removeEventListener("mouseup",handleMouseMove, true);
+	document.getElementById("View").removeEventListener("mousemove",handleMouseMove, true);
+}
+fillTransactionList("SVG");
+document.getElementById("View").addEventListener("wheel",handleWheel);
+document.getElementById("View").addEventListener("mousedown",handleMouseDown);
+//document.getElementById("View").addEventListener("click",handleClickOnView);
+</script>
+</body>
+</html>
