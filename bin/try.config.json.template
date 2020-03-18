@@ -1,0 +1,71 @@
+[
+{ "config":":default:",
+    "options":{
+        "#comment":"###### Default options, do not change unless you know what you are doing",
+        "has-precedence":"false",
+        "db-login":"operator", "db-password":"CastAIP", "db-server": "localhost", "db-port":"2280", "db-base":"postgre",
+        "b-min-weight":6,
+        "t-min-weight":9,
+        "generate-eviews":["00","all-00","01","all-01","02","all-02","03","all-03"],
+        "data-sub-folder":"_data",
+        "paths-sub-folder":"_paths",
+        "gviz-sub-folder":"_gviz",
+        "gviz-distrib-path":"C:\\ProgramFiles\\Tools\\Drawing\\Graphviz\\graphviz-2.38\\release",
+        "gviz-outputs":[ "png", "svg", "#dot", "#xdot" ],
+        "#dummy":null,
+        "style":{
+            "node": {
+                "border-color": { "regular":"white", "entry-point":"goldenrod1", "end-point":"goldenrod1", "with-crit":"red", "with-non-crit":"lightsalmon" },
+                "fill-color": { "regular":"white", "entry-point":"lightyellow", "end-point": "cornsilk", "with-crit":"white", "with-non-crit":"white" },
+                "text-color": { "object-type":"blue3", "object-name":"magenta3", "crit-violation":"red3", "non-crit-violation":"gray40"}
+            }
+        }
+    }
+},
+
+{ "config":"WebGoat [ALL]@localhost",
+    "options":{
+        "enable":true, "disable-all-others":false,
+        "client-name":"None", "client-app":"WebGoat", "db-server": "localhost", "db-port":"2280", "db-schema-prefix":"webgoat",
+
+        "output-root-folder":"D:\\ZRepoT\\Prj\\WebGoat\\_kyt\\_Refactoring4",
+        "#commented-out#health-factors":["Efficiency"],
+        "with-violations":true,
+        "critical-rules-only":true,
+        "override-existing-extract-file":false,
+        "#transaction-limit":1
+    },
+    "transactions" :[
+        { "#":"ROB, TRI=2919", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjection.html", "subfolder":"[ROB]_01", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=1080", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjectionAdvanced.html", "subfolder":"[ROB]_02", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=702", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\xxe\\src\\main\\resources\\html\\XXE.html", "subfolder":"[ROB]_03", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=580", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\jwt\\src\\main\\resources\\html\\JWT.html", "subfolder":"[ROB]_04", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=434", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\ssrf\\src\\main\\resources\\html\\SSRF.html", "subfolder":"[ROB]_05", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=430", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjectionMitigations.html", "subfolder":"[ROB]_06", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=370", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\cross-site-scripting\\src\\main\\resources\\html\\CrossSiteScripting.html", "subfolder":"[ROB]_07", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=318", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\idor\\src\\main\\resources\\html\\IDOR.html", "subfolder":"[ROB]_08", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=312", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\missing-function-ac\\src\\main\\java\\org\\owasp\\webgoat\\missing_ac\\Users.java//PORT/GET//", "subfolder":"[ROB]_09", "enable":true, "root-object-id":null },
+        { "#":"ROB, TRI=302", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\password-reset\\src\\main\\resources\\html\\PasswordReset.html", "subfolder":"[ROB]_10", "enable":true, "root-object-id":null },
+
+        { "#":"EFF, TRI=2141", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjection.html", "subfolder":"[EFF]_01", "enable":true, "root-object-id":null },
+        { "#":"EFF, TRI=529", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjectionAdvanced.html", "subfolder":"[EFF]_02", "enable":true, "root-object-id":null },
+        { "#":"EFF, TRI=474", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjectionMitigations.html", "subfolder":"[EFF]_03", "enable":true, "root-object-id":null },
+        { "#":"EFF, TRI=242", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\missing-function-ac\\src\\main\\java\\org\\owasp\\webgoat\\missing_ac\\Users.java//PORT/GET//", "subfolder":"[EFF]_04", "enable":true, "root-object-id":null },
+        { "#":"EFF, TRI=233", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\js\\assignment12.js.ready.ready", "subfolder":"[EFF]_05", "enable":true, "root-object-id":null },
+        { "#":"EFF, TRI=206", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\challenge\\src\\main\\resources\\html\\Challenge5.html", "subfolder":"[EFF]_06", "enable":true, "root-object-id":null },
+        { "#":"EFF, TRI=160", "fullname":"org.dummy.insecure.framework.VulnerableTaskHolder.readObject", "subfolder":"[EFF]_07", "enable":true, "root-object-id":null },
+
+        { "#":"SEC, TRI=4895", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjection.html", "subfolder":"[SEC]_01", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=1250", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjectionAdvanced.html", "subfolder":"[SEC]_02", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=585", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\xxe\\src\\main\\resources\\html\\XXE.html", "subfolder":"[SEC]_03", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=500", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\jwt\\src\\main\\resources\\html\\JWT.html", "subfolder":"[SEC]_04", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=460", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\ssrf\\src\\main\\resources\\html\\SSRF.html", "subfolder":"[SEC]_05", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=420", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\java\\org\\owasp\\webgoat\\sql_injection\\advanced\\SqlInjectionChallenge.java//PORT/PUT/", "subfolder":"[SEC]_06", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=370", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\missing-function-ac\\src\\main\\java\\org\\owasp\\webgoat\\missing_ac\\Users.java//PORT/GET//", "subfolder":"[SEC]_07", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=315", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\sql-injection\\src\\main\\resources\\html\\SqlInjectionMitigations.html", "subfolder":"[SEC]_08", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=298", "fullname":"org.dummy.insecure.framework.VulnerableTaskHolder.readObject", "subfolder":"[SEC]_09", "enable":true, "root-object-id":null },
+        { "#":"SEC, TRI=260", "fullname":"C:\\Onboarding_Automation\\Webi-Install\\AipNode\\data\\deploy\\webgoat\\main_sources\\webgoat-release-v8.0.0.M26\\WebGoat-release-v8.0.0.M26\\webgoat-lessons\\challenge\\src\\main\\resources\\html\\Challenge5.html", "subfolder":"[SEC]_10", "enable":true, "root-object-id":null }
+    ]
+}
+
+]
