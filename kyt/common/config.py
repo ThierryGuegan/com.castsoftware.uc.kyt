@@ -2,6 +2,7 @@ import sys
 import traceback
 import json
 import logging
+import dal.css.tri
 logger = logging.getLogger(__name__) 
 logging.basicConfig(
     format='[%(levelname)-8s][%(asctime)s][%(name)-12s] %(message)s',
@@ -13,8 +14,8 @@ import os
 import pkg_resources
 import shutil
 
-import dal.css.tri
 import common.timewatch
+TContext = collections.namedtuple( "TContext", [ "outputFolder" ] )
 
 C_TRANSACTIONS_AUTOMATIC="automatic"
 C_TRANSACTION_LIMITS={
@@ -27,11 +28,38 @@ C_KYT_VIEWER_RESOURCES=( "_kyt.html", "_kyt-png.html", "_kyt-svg.html", "_kyt-vi
 C_KYT_VIEWER_FOLDER="[_kyt-viewer]"
 
 
+class COptions:
+    def __init__(self):
+        self._options = {}
+
+    def set( self, aKey, aValue ):
+        self._options[aKey] = aValue
+
+    def get( self, aKey, aDefault=None ):
+        retVal = aDefault
+        if aKey in self._options:
+            retVal = self._options[aKey]
+        return retVal
+
+
 class CConfigUtil:
+    def getOptionFromOPath( aOptions, aOPath, aDefault ):
+        retVal = aDefault
+        vDictOrVal = aOptions
+        for i in aOPath.split('.'):
+            if i in vDictOrVal:
+                retVal = vDictOrVal[i]
+                vDictOrVal = retVal
+            else:
+                retVal = aDefault
+        return retVal
+        
     def _createFolderIfNotExist( aFolderPath ):
         if not os.path.isdir( aFolderPath ):
             logger.info( "    creating folder [{0}]".format(aFolderPath) )
             os.mkdir( aFolderPath )
+
+
 
     def createConfigurationFrom( aConfig, aSchemaPrefix, aSchemaPrefixMeasure=None, aSchemaPrefixLocal=None, aSchemaPrefixMng=None, aSchemaPrefixCentral=None ):
         retVal = dict(aConfig)
@@ -42,9 +70,9 @@ class CConfigUtil:
         retVal['db-central'] = ( retVal['db-prefix'] + "_central" ) if not aSchemaPrefixCentral else aSchemaPrefixCentral
         retVal['db-mngt'] = ( retVal['db-prefix'] + "_mngt" ) if not aSchemaPrefixMng else aSchemaPrefixMng
 
-        retVal['db-login'] = 'operator'
-        retVal['db-password'] = 'CastAIP'
-        retVal['db-base'] = 'postgres'
+        #retVal['db-login'] = 'operator'
+        #retVal['db-password'] = 'CastAIP'
+        #retVal['db-base'] = 'postgres'
 
         return retVal
 
@@ -55,6 +83,8 @@ class CConfig:
         with open(aPath,"r") as vFD:
             self._configs = json.load( vFD )
             logger.info( "Found {} configurations".format(len(self._configs)))
+            for i in self._configs:
+                logger.debug( "  config: {}".format(i['config']))
             self._applyDefaultOptions()        
 
     def _applyDefaultOptions( self ):
@@ -82,7 +112,7 @@ class CConfig:
                 if not ( aSkipDisabled and 'enable' in i['options'] and True!=i['options']['enable'] ):
                     yield i
                 else:
-                    logger.info( "  skipping disabled config [{}]".format(i['config']) )
+                    logger.warning( "!!!WARNING: skipping disabled config [{}]".format(i['config']) )
 
     def _prepareOutputDirectories( self, aConfigOptions ):
         CConfigUtil._createFolderIfNotExist( aConfigOptions['output-root-folder'] )
@@ -104,7 +134,7 @@ class CConfig:
         self._prepareOutputDirectories( aConfigOptions )
         self._prepareKytViewer( aConfigOptions )
 
-    def processConfigurations( self, aTrCallback, aConfigCallback ):
+    def processConfigurations( self, aTrCallback, aConfigCallback, aUseCached ):
         for nC, iC in enumerate(self.configurations()):
             logger.info( "-- Processing config [{}]...".format(iC['config']) )
             vConfigOptions = iC['options']
@@ -126,10 +156,10 @@ class CConfig:
             self._prepareConfigurations( vConfigOptions )
 
             # Iterating trhtough transactions defined in config.json file
-            vErrors.extend( self._processTransactions( iC, vConfigOptions, aTrCallback, aConfigCallback ) )
+            vErrors.extend( self._processTransactions( iC, vConfigOptions, aTrCallback, aConfigCallback, aUseCached ) )
 
             if "disable-all-others" in vConfigOptions and vConfigOptions["disable-all-others"]:
-                logger.info( "! skipping all other configurations: disable-all-others set in congif.json" )
+                logger.warning( "!!!WARNING: skipping all other configurations: disable-all-others set in congif.json" )
                 break
 
         if len(vErrors)>0:
@@ -184,17 +214,29 @@ class CConfig:
                 vAutomaticDone = True
         return retVal
 
-    def _generateListOfRiskiestTransactions( aConfigTransactions, aOptions ):
-        vAutoTransactions = CConfig._automaticLoadOfRiskiestTransactions(aConfigTransactions,aOptions)
-        with open(os.path.join(aOptions['output-root-folder'],"transaction-decl.json"),"w") as vOutJson:
-            for iN, iTrDecl in enumerate(vAutoTransactions):
-                print( "  {}{}".format(json.dumps(iTrDecl),',' if iN<len(vAutoTransactions)-1 else ''), file=vOutJson )
+    def _generateListOfRiskiestTransactions( aConfigTransactions, aOptions, aUseCached ):
+        vAutoTransactions = []
+        vAutoTransactionsFilePath = os.path.join(aOptions['output-root-folder'],"transaction-decl.json")
+        if aUseCached:
+            logger.info( "  reading cached auto transactions from file [{}]".format(vAutoTransactionsFilePath) )
+            with open(vAutoTransactionsFilePath,"r") as vInJson:
+                for iLine in vInJson:
+                    vLine = iLine.strip()
+                    if vLine[-1]==',': vLine = vLine[:-1]
+                    vTrDecl = json.loads(vLine)
+                    vAutoTransactions.append( vTrDecl )
+        else:
+            vAutoTransactions = CConfig._automaticLoadOfRiskiestTransactions(aConfigTransactions,aOptions)
+            logger.info( "  saving auto transactions into file [{}]".format(vAutoTransactionsFilePath) )
+            with open(vAutoTransactionsFilePath,"w") as vOutJson:
+                for iN, iTrDecl in enumerate(vAutoTransactions):
+                    print( "  {}{}".format(json.dumps(iTrDecl),',' if iN<len(vAutoTransactions)-1 else ''), file=vOutJson )
         retVal = vAutoTransactions.copy()
         retVal.extend( [ x for x in aConfigTransactions if C_TRANSACTIONS_AUTOMATIC not in x ] )
         return retVal
 
-    def _processTransactions( self, aConfig, aOptions, aTrCallback, aConfigCallback ):
-        vConfigTransactions = CConfig._generateListOfRiskiestTransactions(aConfig['transactions'],aOptions)
+    def _processTransactions( self, aConfig, aOptions, aTrCallback, aConfigCallback, aUseCached ):
+        vConfigTransactions = CConfig._generateListOfRiskiestTransactions(aConfig['transactions'],aOptions,aUseCached)
 
         with open( os.path.join(aOptions['output-root-folder'],"transaction-data.js"), "w" ) as vJsTrData:
             # Output algorithms
