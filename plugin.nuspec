@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>com.castsoftware.uc.kyt</id>
+        <version>1.0.1</version>
+        <title>Know Your Transaction</title>
+        <authors>User Community</authors>
+        <owners>User Community</owners>
+        <licenseUrl>http://www.castsoftware.com/ps/doc/extension/license</licenseUrl>
+        <projectUrl>https://github.com/CAST-Extend/com.castsoftware.uc.kyt</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This is a great extension that creates graphical views of risks related to your transactions</description>
+        <releaseNotes>https://github.com/CAST-Extend/com.castsoftware.uc.kyt/wiki#release-notes</releaseNotes>
+        <tags>transaction kyT CAIP8.3.15</tags>
+        <dependencies>
+            <dependency id="CAIP" version="8.3.15" />
+        </dependencies>
+    </metadata>
+    <files />
+</package>

@@ -1,6 +1,6 @@
 KyT -- Know your transactions
 =====================================
-KyT is an extenstion to CAST AIP Platform that illustrates risks carried by transactions of already analysed applications.
+KyT is a standalone extenstion to CAST AIP Platform that illustrates risks carried by transactions of already analysed applications.
 
 
 KyT will render riskiest paths of transactions in PNG or SVG format as well as HTML/JS view, and also will generate CAST Enlighten view.

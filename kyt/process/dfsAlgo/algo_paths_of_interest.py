@@ -8,6 +8,28 @@ logging.basicConfig(
     level=logging.INFO
 )
 
+
+def pathsToObjectsOfInterest( aGraph, aStartNode, aObjectsOfInterest, aLeafOfInterest, aAllEndPoints=False ):
+    logging.getLogger().setLevel(logging.INFO)
+    try:
+        res = _pathsToObjectsOfInterestRec( TExplorationData(aGraph,aObjectsOfInterest, aLeafOfInterest,time.perf_counter()),
+            aStartNode, -1 if aAllEndPoints else 0, {}, tuple() )
+    except ( AssertionError, TypeError, NameError, AttributeError ):
+        raise
+    except:
+        res = None
+
+    
+    # keep only pathes where at least one object of interest has been crossed
+    if res:
+        retVal = [ x for x in res if aAllEndPoints or x[1]>0 ]
+    else:
+        retVal = []
+
+    logging.getLogger().setLevel(logging.INFO)
+    return retVal
+
+
 ## -- -----------------------------------------------------------------------
 # aG : graph to be explored (required to translate node <-> num )
 # aStarNode : node from where to start exploration
@@ -88,26 +110,6 @@ def _pathsToObjectsOfInterestRec( aExplData, aStartNode, aNbAscOoI, aVisited, aP
         # cycle detected:
         #   ignore it (too complicated to handle properly all cases)
         retVal = None
-    return retVal
-
-def pathsToObjectsOfInterest( aGraph, aStartNode, aObjectsOfInterest, aLeafOfInterest, aAllEndPoints=False ):
-    logging.getLogger().setLevel(logging.INFO)
-    try:
-        res = _pathsToObjectsOfInterestRec( TExplorationData(aGraph,aObjectsOfInterest, aLeafOfInterest,time.perf_counter()),
-            aStartNode, -1 if aAllEndPoints else 0, {}, tuple() )
-    except ( AssertionError, TypeError, NameError, AttributeError ):
-        raise
-    except:
-        res = None
-
-    
-    # keep only pathes where at least one object of interest has been crossed
-    if res:
-        retVal = [ x for x in res if aAllEndPoints or x[1]>0 ]
-    else:
-        retVal = []
-
-    logging.getLogger().setLevel(logging.INFO)
     return retVal
 
 

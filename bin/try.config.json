@@ -10,7 +10,7 @@
         "data-sub-folder":"_data",
         "paths-sub-folder":"_paths",
         "gviz-sub-folder":"_gviz",
-        "gviz-distrib-path":"C:\\ProgramFiles\\Tools\\Drawing\\Graphviz\\graphviz-2.38\\release",
+        "gviz-distrib-path":"C:\\Program Files (x86)\\Graphviz2.38\\release\\bin",
         "gviz-outputs":[ "png", "svg", "#dot", "#xdot" ],
         "style":{
             "node": {
@@ -29,7 +29,7 @@
         "enable":true, "disable-all-others":true,
         "client-name":"Community", "client-app":"Webgoat", "db-server": "localhost", "db-base":"postgres", "db-port":"2280", "db-schema-prefix":"webgoat",
         "title":"Webgoat",
-        "output-root-folder":"D:\\ZRepoT\\Prj\\Webgoat\\_Kyt-Github-RC02",
+        "output-root-folder":"D:\\temp\\webgoat-kyt",
         "#commented-out#health-factors":["Efficiency"],
         "with-violations":true,
         "critical-rules-only":true,
@@ -37,7 +37,7 @@
         "#transaction-limit":1
     },
     "transactions" : [
-        { "automatic":true, "limit-rob":5, "limit-eff":5, "limit-sec":5 }
+        { "automatic":true, "limit-rob":5, "limit-eff":6, "limit-sec":7 }
     ]
 }
 

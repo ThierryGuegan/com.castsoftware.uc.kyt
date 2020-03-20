@@ -98,25 +98,14 @@ function populateGraph(){
 </head>
 <body>
 <div id="Container" style="width:100%">
-  <div id="Menu" style="float:left; border:1px solid black; width:30%; height:100%; overflow:scroll;overflow:auto;">
+  <div id="Menu" style="float:left; border:1px solid black; width:20%; height:100%; overflow:scroll;overflow:auto;">
     <table id="kytTable" class=" table order-list">
 	  <!-- <thead><tr><td>Name</td><td>Subfolder</td><td>Fullname</td><td>HF</td><td>TRI</td></tr></thead> -->
-	  <tbody>
-        <tr><td class="col-sm-4"></td>
-	      <td class="col-sm-4"></td>
-	      <td class="col-sm-3"></td>
-	      <td class="col-sm-3"></td>
-		  <td class="col-sm-2"></td></tr>
-      </tbody>
-
     </table>
   </div> <!-- Menu -->
   <div id="View" style="border:1px solid red; height:100%; overflow:scroll;overflow:auto;">
   </div><!-- View -->
 </div/><!-- Container -->
-  
-  <div id="kytTrace">toto
-  </div>
 <script>
 var gMouseX=-1
 var gMouseY=-1
@@ -165,7 +154,7 @@ function fillTransactionList(aKind) {
 		createTransactionRowHeading( vTable, vSubfolder, null, null, null, aKind )
 		
 		// One cell per algo, with following layout
-		vLayout = [ { start:0, end:7, isAll:false }, { start:0, end:4, isAll:true}, { start: 5, end: 11, isAll: true } ]
+		vLayout = [ { start:0, end:4, isAll:false }, { start:0, end:4, isAll:true}, { start: 10, end: 13, isAll: true } ]
 		vLayout.forEach(function(aItem,aIndex){
 			var vNewTr = vTable.insertRow(-1)
 			vNewTr.insertCell(-1).appendChild(document.createTextNode("\u00A0"));

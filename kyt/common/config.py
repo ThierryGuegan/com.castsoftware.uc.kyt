@@ -238,7 +238,8 @@ class CConfig:
     def _processTransactions( self, aConfig, aOptions, aTrCallback, aConfigCallback, aUseCached ):
         vConfigTransactions = CConfig._generateListOfRiskiestTransactions(aConfig['transactions'],aOptions,aUseCached)
 
-        with open( os.path.join(aOptions['output-root-folder'],"transaction-data.js"), "w" ) as vJsTrData:
+        vKytViewerFolderPath = os.path.join( aOptions['output-root-folder'], C_KYT_VIEWER_FOLDER )
+        with open( os.path.join(vKytViewerFolderPath,"transaction-data.js"), "w" ) as vJsTrData:
             # Output algorithms
             print( "var G_Algorithms=[\n];", file=vJsTrData )
             

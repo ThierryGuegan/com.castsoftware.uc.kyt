@@ -93,10 +93,10 @@ class CCastHealthFactor:
         
         return retVal
 
-def formatPath( aBaseFilePath, aFile, aIndex=-1 ):
+def formatPath( aBaseFilePath, aFile, aIndex=None ):
     logger.debug( "formatPath({},{})".format(aBaseFilePath,aFile) )
-    if aIndex >= 0:
-        return os.path.join( aBaseFilePath, "{0}-{1:0>2}.{2}".format(
+    if aIndex:
+        return os.path.join( aBaseFilePath, "{}-{}.{}".format(
             gFileNames[aFile][0], aIndex, gFileNames[aFile][1] ) )
     else:
         return os.path.join( aBaseFilePath, "{0}.{1}".format(
@@ -137,7 +137,7 @@ def callAlgo( aAlgo, aGraph, aRootNode, aObjectsOfInterest, aLeavesOfInterest, a
             retAllPaths[aRootNode._num] = [ x for x in retAllPaths[vChildNd._num] ]
     return retRes, retAllPaths
 
-
+TAlgoResult = collections.namedtuple( "TAlgoResult", [ "algo", "res1", "resAll"] )
 def searchPathsOfInterest( aGraph, aRootNodeNum, aObjectNums, aLeafNums, aOptions=None ):
     retVal = []
     vRootNode = aGraph.node(aRootNodeNum)
@@ -149,22 +149,48 @@ def searchPathsOfInterest( aGraph, aRootNodeNum, aObjectNums, aLeafNums, aOption
     for iAlgo in vAlgorithms:
         logger.info( "-- ------------------------------------------------------------------------" )
         vRes, vAllPaths = callAlgo( iAlgo, aGraph, vRootNode, aObjectNums, aLeafNums, aOptions )
-        retVal.append( ( vRes, vAllPaths ) )
+        #retVal.append( ( vRes, vAllPaths ) )
+        retVal.append( TAlgoResult( iAlgo, vRes, vAllPaths ) )
 
     logger.info( "-- ------------------------------------------------------------------------" )
     
     logger.info( "-- ------------------------------------------------------------------------" )
-    logger.info( "Using algo (A): paths of interest no endpoints..." )
-    vRes = algo_paths_of_interest.pathsToObjectsOfInterest( aGraph, vRootNode, aObjectNums, set() )
-    logger.info( "  -> nb paths: {}".format(len(vRes)) )
-    for n,i in enumerate(vRes):
-        logger.debug( "    {:<3}: {}: {}: {}:{}".format(n,i[0],i[1],len(i[2]), i[2]) )
-    vAllPaths = { vRootNode._num : [ (len(x[2]), x[2]) for x in vRes ] }
-    retVal.append( ( None, vAllPaths ) )
-    #print( "{}: {}".format(len(vAllPaths[vRootNode._num]),vAllPaths[vRootNode._num] ) )
-    
-    
+    # Experimental algorithms to be put in process_config
+    if True:
+        for iAlgo in (
+            # 0: algo decl, 1: algo routine, 2: first arg to routine, 3: second arg, 4: kind of results
+            ( process_config.TAlgoDecl("Paths of interest, no endpoints", "10", None, None), algo_paths_of_interest.pathsToObjectsOfInterest, set(), False, True ),
+            ( process_config.TAlgoDecl("Paths of interest, relevant endpoints", "11", None, None), algo_paths_of_interest.pathsToObjectsOfInterest, aLeafNums, False, True ),
+            ( process_config.TAlgoDecl("Paths of interest, all endpoints", "12", None, None), algo_paths_of_interest.pathsToObjectsOfInterest, aLeafNums, True, True ),
+            ( process_config.TAlgoDecl("Paths of interest, all endpoints, all in one", "13", None, None), algo_paths_of_interest2.pathsToObjectsOfInterest2, aLeafNums, True, False )
+        ):
+            logger.info( "using algo {}: {}...".format(iAlgo[0].short_name,iAlgo[0].name) )
+            vRes = iAlgo[1]( aGraph, vRootNode, aObjectNums, iAlgo[2], iAlgo[3] )
+            logger.info( "  -> nb paths: {}".format(len(vRes)) )
+            if iAlgo[4]:
+                for n,i in enumerate(vRes): logger.debug( "    {:<3}: {}: {}: {}:{}".format(n,i[0],i[1],len(i[2]), i[2]) )
+                vAllPaths = { vRootNode._num : [ (len(x[2]), x[2]) for x in vRes ] }
+            else:
+                for n,i in enumerate(vRes): logger.debug( "    {:<3}: {}: {}".format(n,len(i), i) )
+                vAllPaths = { vRootNode._num : [ (len(x), x) for x in vRes ] }
+            #retVal.append( ( None, vAllPaths ) )
+            retVal.append( TAlgoResult( iAlgo[0], None, vAllPaths ) )
+            #print( "{}: {}".format(len(vAllPaths[vRootNode._num]),vAllPaths[vRootNode._num] ) )
+    else:
+        logger.info( "-- ------------------------------------------------------------------------" )
+        iAlgo = ( process_config.TAlgoDecl("Paths of interest, no endpoints", "10", None, None), algo_paths_of_interest.pathsToObjectsOfInterest, set(), False, True )
+        logger.info( "using algo {}: {}...".format(iAlgo[0].short_name,iAlgo[0].name) )
+        vRes = iAlgo[1]( aGraph, vRootNode, aObjectNums, iAlgo[2], iAlgo[3] )
+        logger.info( "  -> nb paths: {}".format(len(vRes)) )
+        for n,i in enumerate(vRes):
+            logger.debug( "    {:<3}: {}: {}: {}:{}".format(n,i[0],i[1],len(i[2]), i[2]) )
+        vAllPaths = { vRootNode._num : [ (len(x[2]), x[2]) for x in vRes ] }
+        retVal.append( TAlgoResult( iAlgo[0], None, vAllPaths ) )
+        #print( "{}: {}".format(len(vAllPaths[vRootNode._num]),vAllPaths[vRootNode._num] ) )
+
+    """    
     logger.info( "-- ------------------------------------------------------------------------" )
+    vAlgoDecl = TAlgoDecl("Paths of interest, no endpoints", "10", None, None)
     logger.info( "Using algo (B): paths of interest, relevant endpoints..." )
     vRes = algo_paths_of_interest.pathsToObjectsOfInterest( aGraph, vRootNode, aObjectNums, aLeafNums, False )
     logger.info( "  -> nb paths: {}".format(len(vRes)) )
@@ -194,7 +220,7 @@ def searchPathsOfInterest( aGraph, aRootNodeNum, aObjectNums, aLeafNums, aOption
     vAllPaths = { vRootNode._num : [ (len(x), x) for x in vRes ] }
     retVal.append( ( None, vAllPaths ) )
     #print( "{}: {}".format(len(vAllPaths[vRootNode._num]),vAllPaths[vRootNode._num] ) )
-    
+    """    
     
     logger.info( "== --------------------------------------------------------------" )
     logger.info( "" )
@@ -390,29 +416,30 @@ def computePathes( aOptions2, aBaseFilePath, aRootNodeId, aOptions, aWithViolati
         if vNum>6:
             break
 
-    vResPairsOf1PathAndAllPaths = searchPathsOfInterest(
+    vAlgoResults = searchPathsOfInterest(
         vGraph, vRootNode._num, vObjectsNum, vEndpointNums
     )
 
     # Output results
     vCastTransaction = n_data.CastTransaction(vTransactionId,vTransactionName,vRootNode,vObjectsWithV,vEndpointNums)
-    for iResult, iPairPathAllPaths in enumerate(vResPairsOf1PathAndAllPaths):
+    for iN, iAlgoRes in enumerate(vAlgoResults):
         # Output best path found if any
-        vRes = iPairPathAllPaths[0]
+        #vRes = iAlgoRes[0]
+        vRes = iAlgoRes.res1
         logger.info( "-- ---------------------------------------------" )
-        logger.info( "outputing results of algo {}...".format(iResult+1) )
+        logger.info( "outputing results of algo {}...".format(iAlgoRes.algo.short_name) )
         
 
         # Output path in path and gviz formats
-        vOPathFilePath = formatPath( os.path.join(aBaseFilePath,"_paths"), 'enlighten-objects', iResult )
-        vOGvizFilePath = formatPath( os.path.join(aBaseFilePath,"_gviz"), 'enlighten-objects', iResult )+".gviz"
+        vOPathFilePath = formatPath( os.path.join(aBaseFilePath,"_paths"), 'enlighten-objects', iAlgoRes.algo.short_name )
+        vOGvizFilePath = formatPath( os.path.join(aBaseFilePath,"_gviz"), 'enlighten-objects', iAlgoRes.algo.short_name )+".gviz"
         output_paths.outputPaths( aOptions2, vOPathFilePath, vOGvizFilePath,
             vGraph, vCastTransaction, { vRootNode._num : [vRes] } )
 
         # Output all paths
-        vOPathFilePath = formatPath( os.path.join(aBaseFilePath,"_paths"), 'enlighten-objects-all2', iResult )
-        vOGvizFilePath = formatPath( os.path.join(aBaseFilePath,"_gviz"), 'enlighten-objects-all2', iResult )+".gviz"
-        vAllPaths = iPairPathAllPaths[1]
+        vOPathFilePath = formatPath( os.path.join(aBaseFilePath,"_paths"), 'enlighten-objects-all2', iAlgoRes.algo.short_name )
+        vOGvizFilePath = formatPath( os.path.join(aBaseFilePath,"_gviz"), 'enlighten-objects-all2', iAlgoRes.algo.short_name )+".gviz"
+        vAllPaths = iAlgoRes.resAll
         if vAllPaths:
             output_paths.outputPaths( aOptions2, vOPathFilePath, vOGvizFilePath, vGraph, vCastTransaction, vAllPaths )
 
