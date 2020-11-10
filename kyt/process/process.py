@@ -120,7 +120,7 @@ def callAlgo( aAlgo, aGraph, aRootNode, aObjectsOfInterest, aLeavesOfInterest, a
     if None!=retRes and None!=retRes[1]:
         logger.info( "  path found -> {}".format(retRes) )
         logger.info( "    nb of cv : {}".format(retRes[0]) )
-        logger.info( "    of lenght: {}".format(len(retRes[1])) )
+        logger.info( "    of length: {}".format(len(retRes[1])) )
     else:
         logger.info( "  no path found" )
 

@@ -22,8 +22,8 @@ def _findLongestPathRec2( aUData, aGraph, aNode, aWishList, aWishLeaves, aAllPat
     retVal= None
 
     if time.perf_counter()-aUData.start >  60*5:
-        logger.error( "***ERROR: exploration is taking to much time, aborting." )
-        raise InfiniteAlgoException("***ERROR: exploration is taking to much time, aborting.")
+        logger.error( "***ERROR: exploration is taking too much time, aborting." )
+        raise InfiniteAlgoException("***ERROR: exploration is taking too much time, aborting.")
 
     if aVisited == None:
         aVisited = {}

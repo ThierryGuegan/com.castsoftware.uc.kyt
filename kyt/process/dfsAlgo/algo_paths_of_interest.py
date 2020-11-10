@@ -49,8 +49,8 @@ def _pathsToObjectsOfInterestRec( aExplData, aStartNode, aNbAscOoI, aVisited, aP
     vElapsed = time.perf_counter()
     vDeltaT = vElapsed-aExplData.startt
     if vDeltaT > 60*5:
-        logger.error( "***ERROR: exploration is taking to much time, aborting." )
-        raise  Exception("***ERROR: exploration is taking to much time, aborting.")
+        logger.error( "***ERROR: exploration is taking too much time, aborting." )
+        raise  Exception("***ERROR: exploration is taking too much time, aborting.")
 
     if aStartNode._num not in aPath:
         if aStartNode._num in aVisited:
