@@ -66,7 +66,7 @@ def _pathsToObjectsOfInterestRec2( aExplData, aStartNode, isOoIUpstream, aVData,
     vElapsed = time.perf_counter()
     vDeltaT = vElapsed-aExplData.startt
     if vDeltaT > 60*5:
-        logger.error( "***ERROR: exploration is taking to much time, aborting." )
+        logger.error( "***ERROR: exploration is taking too much time, aborting." )
         return None
 
     vVData = aVData[aStartNode._num]
